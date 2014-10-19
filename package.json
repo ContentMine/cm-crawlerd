@@ -1,0 +1,42 @@
+{
+  "name": "cm-crawlerd",
+  "description": "'Collect newly published articles and submit them to ContentMine'",
+  "version": "0.1.0",
+  "homepage": "https://github.com/ContentMine/cm-crawlerd",
+  "author": {
+    "name": "Richard Smith-Unna",
+    "url": "http://contentmine.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ContentMine/cm-crawlerd.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ContentMine/cm-crawlerd/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/ContentMine/cm-crawlerd/blob/master/LICENSE-MIT"
+    }
+  ],
+  "keywords": [
+    "cli",
+    "command line"
+  ],
+  "preferGlobal": true,
+  "bin": {
+    "crawlerd": "./bin/crawlerd"
+  },
+  "main": "index.js",
+  "engines": {
+    "node": ">=0.8"
+  },
+  "scripts": {
+    "test": "mocha -R test"
+  },
+  "dependencies": {
+    "minimist": "~0.0.8",
+    "verbalize": "~0.1.1"
+  }
+}
