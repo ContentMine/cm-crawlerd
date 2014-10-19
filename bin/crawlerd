@@ -1,15 +1,47 @@
 #!/usr/bin/env node
-
-var fs = require('fs');
-var path = require('path');
-var log = require('verbalize');
-var argv = require('minimist')(process.argv.slice(2));
+var program = require('commander')
+  , fs = require('fs')
+  , winston = require('winston')
+  , path = require('path')
+  , loglevels = require('../lib/loglevels.js');
 
 
 /**
- * Everything in the file should be customized
+ * Command-line interface
  */
 
+program
+  .version('0.0.1')
+  .option('-j, --journallist <url>',
+          'Path to JSON file listing Journals to crawl.' +
+          ' (default ~/.crawlerd_journals.json)', '~/.crawlerd_journals.json')
+  .option('-r, --ratelimit <int>',
+          'maximum number of queries per second (default 3)', 3)
+  .option('-l, --loglevel <level>',
+          'amount of information to log ' +
+          '(silent, verbose, info*, data, warn, error, or debug)',
+          'info')
+  .parse(process.argv);
+
+// set up logging
+var allowedlevels = Object.keys(loglevels.levels);
+if (allowedlevels.indexOf(program.loglevel) == -1) {
+  winston.error('Loglevel must be one of: ',
+                'quiet, verbose, data, info, warn, error, debug');
+  process.exit(1);
+}
+
+log = new (winston.Logger)({
+  transports: [new winston.transports.Console({
+    level: program.loglevel,
+    levels: loglevels.levels,
+    colorize: true
+  })],
+  level: program.loglevel,
+  levels: loglevels.levels,
+  colorize: true
+});
+winston.addColors(loglevels.colors);
 
 // Verbalize `runner`
 log.runner = 'cm-crawlerd';
@@ -33,18 +65,3 @@ if (!task) {
 /**
  * Application
  */
-
-
-if(!fs.existsSync(file)) {
-  fs.writeFileSync(file, '# Tasks\n\n');
-}
-
-fs.appendFile(file, ('- [ ] ' + task + '\n'), function (err) {
-  if (err) {throw err;}
-
-  log.writeln();
-  log.writeln(log.gray('  todo [appended] ') + '\'' + task + '\' to ' + log.bold(file));
-
-  // If all is well, log a success message.
-  log.success('  ' + log.runner + ' [done]');
-});
